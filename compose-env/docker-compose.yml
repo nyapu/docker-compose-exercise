@@ -1,0 +1,8 @@
+services:
+  app:
+    image: python:3.10-alpine
+    environment:
+      - APP_ENV
+      - APP_VERSION
+    command: ["sh", "-c", "echo App running in $APP_ENV mode, version $APP_VERSION"]
+

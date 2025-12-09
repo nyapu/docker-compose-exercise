@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+    networks:
+      - app-network
+    # Do NOT expose ports outside host
+
+  web:
+    build: ./web
+    contianer_name: web
+    depends_on:
+      - db
+    volumes:
+      - ./web:/var/www/html
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
