@@ -1,0 +1,44 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+  backend:
+    build: ./backend
+    command: ["sh", "wait-for-db.sh"]
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    networks:
+      - app-net
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=pass123
+      - DB_NAME=mydb
+
+  db:
+    image: mysql:8
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-net
+    ports:
+      - "3309:3306"   # host 3309 → container 3306
+
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  db-data:
+
